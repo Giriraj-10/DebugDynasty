@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Component
 public class DataInitializer implements CommandLineRunner {
 
@@ -22,6 +24,7 @@ public class DataInitializer implements CommandLineRunner {
     private BloodBankRepository bloodBankRepository;
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
         seedHospitals();
         seedAmbulances();
@@ -101,7 +104,6 @@ public class DataInitializer implements CommandLineRunner {
         user = userRepository.save(user);
 
         Hospital hospital = Hospital.builder()
-                .firebaseUid(uid)
                 .user(user)
                 .hospitalName(name)
                 .registrationNumber(regNo)
@@ -170,7 +172,6 @@ public class DataInitializer implements CommandLineRunner {
         user = userRepository.save(user);
 
         Ambulance ambulance = Ambulance.builder()
-                .firebaseUid(uid)
                 .user(user)
                 .providerName(provider)
                 .vehicleNumber(vehicleNo)
@@ -221,7 +222,6 @@ public class DataInitializer implements CommandLineRunner {
         user = userRepository.save(user);
 
         BloodBank bloodBank = BloodBank.builder()
-                .firebaseUid(uid)
                 .user(user)
                 .bloodBankName(name)
                 .registrationNumber(regNo)

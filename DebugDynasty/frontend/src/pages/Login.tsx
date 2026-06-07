@@ -3,18 +3,21 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { LanguageSelector } from "../components/LanguageSelector";
-import { 
-  Heart, 
-  Mail, 
-  Lock, 
-  ArrowLeft, 
-  Loader2, 
+import {
+  Heart,
+  Mail,
+  Lock,
+  ArrowLeft,
+  Loader2,
   AlertCircle,
   Stethoscope,
   Building2,
   Truck,
   Droplet,
-  User
+  User,
+  ShieldCheck,
+  Eye,
+  EyeOff
 } from "lucide-react";
 
 export const Login: React.FC = () => {
@@ -23,12 +26,12 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Role can come from search params (e.g. ?role=DOCTOR) or we can inspect URL
   const rawRole = searchParams.get("role") || "PATIENT";
   const role = rawRole.toUpperCase();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -38,7 +41,6 @@ export const Login: React.FC = () => {
     setSubmitting(true);
     try {
       await login(email, password, role);
-      // Success: route to specific dashboard based on role
       navigate(`/${role.toLowerCase()}/dashboard`);
     } catch (err: any) {
       console.error(err);
@@ -48,49 +50,57 @@ export const Login: React.FC = () => {
     }
   };
 
-  // Get specific styles/icons based on role
   const getRoleConfig = () => {
     switch (role) {
       case "DOCTOR":
         return {
           title: t("doctor"),
-          icon: <Stethoscope className="h-6 w-6 text-indigo-500" />,
-          bgColor: "from-indigo-50 to-white",
-          accentColor: "indigo",
-          colorClasses: "border-indigo-200 focus:ring-indigo-500 focus:border-indigo-500 text-indigo-700"
+          icon: <Stethoscope className="h-6 w-6" />,
+          accent: "indigo",
+          accentHex: "#6366f1",
+          panelGrad: "from-indigo-600 via-indigo-700 to-[#3730a3]",
+          panelIcon: <Stethoscope className="h-20 w-20 opacity-20" />,
+          tagline: "Access your patient schedules and live consultation requests.",
         };
       case "HOSPITAL":
         return {
           title: t("hospital"),
-          icon: <Building2 className="h-6 w-6 text-sky-500" />,
-          bgColor: "from-sky-50 to-white",
-          accentColor: "sky",
-          colorClasses: "border-sky-200 focus:ring-sky-500 focus:border-sky-500 text-sky-700"
+          icon: <Building2 className="h-6 w-6" />,
+          accent: "sky",
+          accentHex: "#0ea5e9",
+          panelGrad: "from-sky-600 via-sky-700 to-[#0c4a6e]",
+          panelIcon: <Building2 className="h-20 w-20 opacity-20" />,
+          tagline: "Manage beds, SOS alerts and blood supply in real-time.",
         };
       case "AMBULANCE":
         return {
           title: t("ambulance"),
-          icon: <Truck className="h-6 w-6 text-amber-500" />,
-          bgColor: "from-amber-50 to-white",
-          accentColor: "amber",
-          colorClasses: "border-amber-200 focus:ring-amber-500 focus:border-amber-500 text-amber-700"
+          icon: <Truck className="h-6 w-6" />,
+          accent: "amber",
+          accentHex: "#f59e0b",
+          panelGrad: "from-amber-500 via-amber-600 to-[#92400e]",
+          panelIcon: <Truck className="h-20 w-20 opacity-20" />,
+          tagline: "Go on duty, receive SOS assignments, and broadcast your GPS.",
         };
       case "BLOOD_BANK":
         return {
           title: t("bloodBank"),
-          icon: <Droplet className="h-6 w-6 text-rose-500" />,
-          bgColor: "from-rose-50 to-white",
-          accentColor: "rose",
-          colorClasses: "border-rose-200 focus:ring-rose-500 focus:border-rose-500 text-rose-700"
+          icon: <Droplet className="h-6 w-6" />,
+          accent: "rose",
+          accentHex: "#f43f5e",
+          panelGrad: "from-rose-600 via-rose-700 to-[#881337]",
+          panelIcon: <Droplet className="h-20 w-20 opacity-20" />,
+          tagline: "Update inventory and fulfil hospital blood requests instantly.",
         };
-      case "PATIENT":
       default:
         return {
           title: t("patientPortal"),
-          icon: <User className="h-6 w-6 text-turquoise" />,
-          bgColor: "from-teal-50 to-white",
-          accentColor: "turquoise",
-          colorClasses: "border-teal-200 focus:ring-turquoise focus:border-turquoise text-stormy-teal"
+          icon: <User className="h-6 w-6" />,
+          accent: "teal",
+          accentHex: "#1dd3b0",
+          panelGrad: "from-stormy-teal via-[#0a7a8e] to-turquoise",
+          panelIcon: <Heart className="h-20 w-20 opacity-20 fill-current" />,
+          tagline: "Book consultations, trigger SOS, and track your health journey.",
         };
     }
   };
@@ -98,148 +108,209 @@ export const Login: React.FC = () => {
   const config = getRoleConfig();
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${config.bgColor} flex flex-col justify-between font-sans`}>
-      {/* Header */}
-      <header className="px-6 py-4 flex items-center justify-between border-b border-slate-100 bg-white/50 backdrop-blur-md">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-          <div className="bg-stormy-teal p-2 rounded-xl shadow-md">
-            <Heart className="h-5 w-5 text-turquoise fill-current" />
+    <div className="min-h-screen flex font-sans bg-slate-50">
+      {/* ── Left Brand Panel ── */}
+      <div className={`hidden lg:flex lg:w-5/12 xl:w-1/2 bg-gradient-to-br ${config.panelGrad} flex-col justify-between p-10 text-white relative overflow-hidden`}>
+        {/* decorative circles */}
+        <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-white/5" />
+        <div className="absolute -bottom-20 -right-20 w-64 h-64 rounded-full bg-white/5" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/5" />
+
+        {/* logo */}
+        <div
+          className="relative flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <div className="bg-white/20 backdrop-blur-md p-2.5 rounded-xl border border-white/20">
+            <Heart className="h-6 w-6 text-white fill-current" />
           </div>
-          <span className="text-xl font-black text-stormy-teal tracking-tight">
-            Intelli<span className="text-turquoise">Care</span>
+          <span className="text-2xl font-black tracking-tight">
+            Intelli<span className="opacity-75">Care</span>
           </span>
         </div>
-        <div className="flex items-center gap-3">
-          <LanguageSelector />
+
+        {/* centre copy */}
+        <div className="relative space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-white/15 backdrop-blur-sm rounded-2xl border border-white/15">
+              {config.icon}
+            </div>
+            <h1 className="text-3xl font-black leading-tight">
+              {config.title} Portal
+            </h1>
+          </div>
+          <p className="text-sm text-white/75 leading-relaxed max-w-xs">
+            {config.tagline}
+          </p>
+
+          {/* feature pillls */}
+          <div className="flex flex-col gap-2 pt-4">
+            {[
+              { icon: <ShieldCheck className="h-4 w-4" />, text: "Firebase-secured authentication" },
+              { icon: <Heart className="h-4 w-4" />, text: "Unified multilingual healthcare platform" },
+            ].map((f) => (
+              <div key={f.text} className="flex items-center gap-2 text-sm text-white/80">
+                <span className="text-white/60">{f.icon}</span>
+                {f.text}
+              </div>
+            ))}
+          </div>
         </div>
-      </header>
 
-      {/* Main Login Form Container */}
-      <div className="flex-grow flex items-center justify-center p-6">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
-          
-          {/* Top border colored line */}
-          <div className="h-2 bg-gradient-to-r from-stormy-teal to-turquoise" />
+        {/* footer quote */}
+        <p className="relative text-xs text-white/40">
+          © 2026 IntelliCare · All sessions encrypted
+        </p>
+      </div>
 
-          {/* Form Content */}
-          <div className="p-8 space-y-6">
-            
-            {/* Header info */}
-            <div className="flex flex-col items-center text-center space-y-2 relative">
+      {/* ── Right Form Panel ── */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* mobile header */}
+        <header className="lg:hidden px-6 py-4 flex items-center justify-between border-b border-slate-200 bg-white/80 backdrop-blur-md">
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            <div className="bg-stormy-teal p-2 rounded-xl shadow-md">
+              <Heart className="h-5 w-5 text-turquoise fill-current" />
+            </div>
+            <span className="text-xl font-black text-stormy-teal tracking-tight">
+              Intelli<span className="text-turquoise">Care</span>
+            </span>
+          </div>
+          <LanguageSelector />
+        </header>
+
+        {/* form content */}
+        <div className="flex-1 flex items-center justify-center px-6 py-10">
+          <div className="w-full max-w-md space-y-8 page-enter">
+
+            {/* top bar: back + language on desktop */}
+            <div className="flex items-center justify-between">
               <button
                 onClick={() => navigate("/")}
-                className="absolute left-0 top-1 text-slate-400 hover:text-stormy-teal transition-colors"
-                title="Back to Landing Page"
+                className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-stormy-teal transition-colors font-semibold"
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-4 w-4" /> Back
               </button>
-
-              <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center shadow-inner mt-4 lg:mt-0">
-                {config.icon}
+              <div className="hidden lg:block">
+                <LanguageSelector />
               </div>
+            </div>
 
-              <h2 className="text-2xl font-extrabold text-stormy-teal pt-2">
-                {config.title} {t("login")}
+            {/* heading */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
+                  {config.icon}
+                </div>
+              </div>
+              <h2 className="text-2xl font-black text-slate-900">
+                Sign in to {config.title}
               </h2>
               <p className="text-sm text-slate-500">
-                Please enter your credentials to access your dashboard
+                Enter your credentials to access your dashboard.
               </p>
             </div>
 
-            {/* Error Message */}
+            {/* error */}
             {error && (
-              <div className="p-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-700 text-sm flex items-start gap-2.5">
+              <div className="flex items-start gap-3 p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-sm">
                 <AlertCircle className="h-5 w-5 text-rose-500 shrink-0 mt-0.5" />
-                <span>{error}</span>
+                <span className="leading-relaxed">{error}</span>
               </div>
             )}
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              
+            {/* form */}
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* email */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                   {t("email")}
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail className="h-5 w-5" />
-                  </div>
+                  <Mail className="absolute inset-y-0 left-0 ml-3.5 my-auto h-4.5 w-4.5 text-slate-400 pointer-events-none h-4 w-4 top-1/2 -translate-y-1/2" />
                   <input
+                    id="login-email"
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium placeholder-slate-400 focus:bg-white focus:border-stormy-teal focus:ring-2 focus:ring-stormy-teal/15 transition-all"
                   />
                 </div>
               </div>
 
+              {/* password */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                     {t("password")}
                   </label>
                   <Link
                     to={`/forgot-password?role=${role}`}
-                    className="text-xs font-bold text-turquoise hover:text-turquoise-dark transition-colors"
+                    className="text-xs font-bold text-turquoise hover:text-stormy-teal transition-colors"
                   >
                     {t("forgotPassword")}
                   </Link>
                 </div>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Lock className="h-5 w-5" />
-                  </div>
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                   <input
-                    type="password"
+                    id="login-password"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 transition-all"
+                    className="w-full pl-10 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium placeholder-slate-400 focus:bg-white focus:border-stormy-teal focus:ring-2 focus:ring-stormy-teal/15 transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
                 </div>
               </div>
 
-              {/* Login Button */}
+              {/* submit */}
               <button
+                id="login-submit-btn"
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3.5 px-4 bg-stormy-teal hover:bg-stormy-teal-dark text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-4 bg-stormy-teal hover:bg-[#064e5c] disabled:opacity-60 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm"
               >
                 {submitting ? (
                   <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     <span>{t("submitting")}</span>
                   </>
                 ) : (
                   <span>{t("login")}</span>
                 )}
               </button>
-
             </form>
 
-            {/* Footer Registration Link */}
-            <div className="text-center pt-2 border-t border-slate-100 text-sm text-slate-500">
+            {/* footer */}
+            <p className="text-center text-sm text-slate-500">
               Don't have an account?{" "}
               <Link
                 to={`/register?role=${role}`}
-                className="font-bold text-turquoise hover:underline transition-all"
+                className="font-bold text-turquoise hover:underline"
               >
                 {t("signup")}
               </Link>
-            </div>
-
+            </p>
           </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      <footer className="py-4 text-center text-xs text-slate-400 bg-white/20 border-t border-slate-100">
-        IntelliCare Unified Authentication System. All sessions are encrypted.
-      </footer>
+        <footer className="py-4 text-center text-xs text-slate-400 border-t border-slate-100">
+          IntelliCare Unified Authentication System. All sessions are encrypted.
+        </footer>
+      </div>
     </div>
   );
 };

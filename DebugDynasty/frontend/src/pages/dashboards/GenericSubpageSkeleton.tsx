@@ -10,7 +10,7 @@ export const GenericSubpageSkeleton: React.FC = () => {
   const title = pageName.charAt(0).toUpperCase() + pageName.slice(1);
 
   return (
-    <div className="p-8 bg-white border border-slate-200 rounded-3xl shadow-sm text-center max-w-2xl mx-auto my-12 space-y-4">
+    <div className="p-8 bg-white border border-slate-200 rounded-3xl shadow-sm text-center max-w-2xl mx-auto my-12 space-y-4 page-enter">
       <div className="h-16 w-16 bg-turquoise/10 rounded-2xl flex items-center justify-center mx-auto">
         <Activity className="h-8 w-8 text-stormy-teal animate-pulse" />
       </div>

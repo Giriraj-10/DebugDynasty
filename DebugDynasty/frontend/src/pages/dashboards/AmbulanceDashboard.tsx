@@ -276,18 +276,32 @@ export const AmbulanceDashboard: React.FC = () => {
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-black text-stormy-teal flex items-center gap-2">
-            <Truck className="h-6 w-6" />
-            Ambulance Dashboard
-          </h1>
-          <p className="text-slate-500 text-sm mt-1">Manage your active duty status and emergency assignments.</p>
-        </div>
-        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-extrabold border ${isConnected ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-slate-100 text-slate-500 border-slate-200"}`}>
-          {isConnected ? <Wifi className="h-3.5 w-3.5" /> : <WifiOff className="h-3.5 w-3.5" />}
-          {isConnected ? "Connected" : "Offline"}
+    <div className="space-y-6">
+      {/* Welcome hero banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-500 via-amber-600 to-[#92400e] p-7 text-white shadow-xl">
+        <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/5" />
+        <div className="absolute -right-4 top-8 h-32 w-32 rounded-full bg-white/5" />
+        <div className="absolute right-24 -bottom-8 h-24 w-24 rounded-full bg-white/5" />
+        <Truck className="absolute right-6 top-6 h-10 w-10 text-white/10" />
+        <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <p className="text-amber-200 font-semibold text-sm tracking-wide">Ambulance Command Center</p>
+            <h1 className="text-3xl font-black leading-tight">Ambulance Dashboard</h1>
+            <p className="text-white/70 text-sm max-w-md">Toggle duty status, broadcast your live GPS, and manage incoming SOS emergency assignments.</p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <div className={`px-4 py-3 rounded-2xl text-center border ${isOnDuty ? "bg-white/15 border-white/20" : "bg-white/5 border-white/10"}`}>
+              <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Status</p>
+              <p className={`text-sm font-black ${isOnDuty ? "text-emerald-300" : "text-slate-300"}`}>{isOnDuty ? "ON DUTY" : "OFF DUTY"}</p>
+            </div>
+            <div className={`px-4 py-3 rounded-2xl text-center border ${isConnected ? "bg-white/15 border-white/20" : "bg-white/5 border-white/10"}`}>
+              <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Network</p>
+              <div className="flex items-center gap-1.5 justify-center mt-0.5">
+                {isConnected ? <Wifi className="h-4 w-4 text-emerald-300" /> : <WifiOff className="h-4 w-4 text-slate-300" />}
+                <p className="text-sm font-black">{isConnected ? "Live" : "Offline"}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

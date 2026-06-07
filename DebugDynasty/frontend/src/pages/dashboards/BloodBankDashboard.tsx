@@ -145,28 +145,34 @@ export const BloodBankDashboard: React.FC = () => {
   const pendingCount = requests.filter(r => r.status === "PENDING").length;
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-stormy-teal to-turquoise p-7 text-white shadow-xl">
-        <div className="absolute right-[-20px] top-[-20px] opacity-10 pointer-events-none">
-          <Droplet className="h-44 w-44 fill-current" />
-        </div>
-        <div className="relative flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-black">{bankInfo?.name ?? data.bloodBankName}</h1>
-            <p className="text-white/70 text-sm mt-1 flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5" /> {bankInfo?.address ?? data.address}
+    <div className="space-y-6">
+      {/* Welcome hero banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-rose-600 via-rose-700 to-[#881337] p-7 text-white shadow-xl">
+        <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/5" />
+        <div className="absolute -right-4 top-8 h-32 w-32 rounded-full bg-white/5" />
+        <div className="absolute right-24 -bottom-8 h-24 w-24 rounded-full bg-white/5" />
+        <Droplet className="absolute right-6 top-6 h-10 w-10 text-white/10 fill-current" />
+        <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <p className="text-rose-200 font-semibold text-sm tracking-wide">Blood Bank Operations</p>
+            <h1 className="text-3xl font-black leading-tight">{bankInfo?.name ?? data.bloodBankName}</h1>
+            <p className="text-white/70 text-sm max-w-md flex items-center gap-1">
+              <MapPin className="h-3.5 w-3.5 shrink-0" /> {bankInfo?.address ?? data.address}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             {pendingCount > 0 && (
-              <div className="bg-rose-500 text-white px-3 py-1.5 rounded-full text-xs font-black flex items-center gap-1 animate-pulse">
-                <Bell className="h-3.5 w-3.5" /> {pendingCount} Pending
+              <div className="bg-white/20 text-white px-4 py-3 rounded-2xl text-center border border-white/20">
+                <p className="text-[10px] font-bold text-rose-100 uppercase tracking-widest">Pending</p>
+                <p className="text-2xl font-black">{pendingCount}</p>
               </div>
             )}
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border ${isConnected ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-white/10 text-white/60 border-white/10"}`}>
-              {isConnected ? <Wifi className="h-3.5 w-3.5" /> : <WifiOff className="h-3.5 w-3.5" />}
-              {isConnected ? "Live" : "Offline"}
+            <div className={`px-4 py-3 rounded-2xl text-center border ${isConnected ? "bg-white/15 border-white/20" : "bg-white/5 border-white/10"}`}>
+              <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Network</p>
+              <div className="flex items-center gap-1.5 justify-center mt-0.5">
+                {isConnected ? <Wifi className="h-4 w-4 text-emerald-300" /> : <WifiOff className="h-4 w-4 text-slate-300" />}
+                <p className="text-sm font-black">{isConnected ? "Live" : "Offline"}</p>
+              </div>
             </div>
           </div>
         </div>

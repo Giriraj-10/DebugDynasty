@@ -230,7 +230,7 @@ export const DashboardLayout: React.FC = () => {
         </header>
 
         {/* Page content */}
-        <main className="flex-grow overflow-y-auto p-6">
+        <main className="flex-grow overflow-y-auto p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
             <Outlet />
           </div>

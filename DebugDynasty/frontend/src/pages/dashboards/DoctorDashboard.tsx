@@ -224,7 +224,7 @@ export const DoctorDashboard: React.FC = () => {
   const acceptedCount = appointments.filter((app) => app.status === "ACCEPTED").length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-enter">
       
       {/* Welcome banner */}
       <div className="p-6 rounded-3xl bg-gradient-to-r from-stormy-teal via-[#0a7589] to-turquoise text-white shadow-lg relative overflow-hidden">

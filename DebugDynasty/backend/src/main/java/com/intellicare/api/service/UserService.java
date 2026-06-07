@@ -53,7 +53,6 @@ public class UserService {
         switch (role) {
             case PATIENT:
                 Patient patient = Patient.builder()
-                        .firebaseUid(uid)
                         .user(user)
                         .fullName((String) payload.getOrDefault("fullName", ""))
                         .phone((String) payload.get("phone"))
@@ -65,7 +64,6 @@ public class UserService {
 
             case DOCTOR:
                 Doctor doctor = Doctor.builder()
-                        .firebaseUid(uid)
                         .user(user)
                         .fullName((String) payload.getOrDefault("fullName", ""))
                         .phone((String) payload.get("phone"))
@@ -81,7 +79,6 @@ public class UserService {
 
             case HOSPITAL:
                 Hospital hospital = Hospital.builder()
-                        .firebaseUid(uid)
                         .user(user)
                         .hospitalName((String) payload.getOrDefault("hospitalName", ""))
                         .registrationNumber((String) payload.getOrDefault("registrationNumber", ""))
@@ -93,7 +90,6 @@ public class UserService {
 
             case AMBULANCE:
                 Ambulance ambulance = Ambulance.builder()
-                        .firebaseUid(uid)
                         .user(user)
                         .providerName((String) payload.getOrDefault("providerName", ""))
                         .vehicleNumber((String) payload.getOrDefault("vehicleNumber", ""))
@@ -105,7 +101,6 @@ public class UserService {
 
             case BLOOD_BANK:
                 BloodBank bloodBank = BloodBank.builder()
-                        .firebaseUid(uid)
                         .user(user)
                         .bloodBankName((String) payload.getOrDefault("bloodBankName", ""))
                         .registrationNumber((String) payload.getOrDefault("registrationNumber", ""))

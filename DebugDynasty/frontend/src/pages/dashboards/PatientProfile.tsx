@@ -51,13 +51,14 @@ export const PatientProfile: React.FC = () => {
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-black text-stormy-teal">My Profile</h1>
-        <p className="text-slate-500 text-sm mt-1">Manage your personal information and contact details.</p>
+    <div className="space-y-6 page-enter">
+      {/* Section header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-black text-stormy-teal">My Profile</h1>
+          <p className="text-slate-500 text-sm mt-1">Manage your personal information and contact details.</p>
+        </div>
       </div>
-
       {notification && (
         <div
           className={`p-4 rounded-xl text-sm font-semibold flex items-center gap-2 border transition-all duration-300 ${

@@ -132,7 +132,7 @@ export const PatientDashboard: React.FC = () => {
   const activeMedsList = reminders.filter(r => r.type === "MEDICINE" || r.type === "PRESCRIPTION_MED");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-enter">
 
       {/* Welcome Hero Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-stormy-teal via-[#0a7a8e] to-turquoise p-7 text-white shadow-xl">
